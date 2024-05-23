@@ -313,6 +313,9 @@ pub struct HighlightStyle {
     /// The underline style of the text
     pub strikethrough: Option<StrikethroughStyle>,
 
+    /// The rainbow bracket style
+    pub rainbow_bracket: Option<RainbowBracketStyle>,
+
     /// Similar to the CSS `opacity` property, this will cause the text to be less vibrant.
     pub fade_out: Option<f32>,
 }
@@ -573,6 +576,21 @@ pub struct StrikethroughStyle {
     pub color: Option<Hsla>,
 }
 
+/// The colors that will color each pair of brackets.
+#[derive(Refineable, Clone, Copy, Default, Debug, PartialEq, Eq)]
+#[refineable(Debug)]
+pub struct RainbowBracketStyle {
+    /// The colors to use for the brackets pairs
+    pub colors: Option<[Hsla; 4]>,
+}
+
+//impl Default for RainbowBracketStyle {
+//    fn default() -> Self {
+//        // Bracket colors, could be grabbed from theme and leave these as default
+//        // TODO:
+//    }
+//}
+
 /// The kinds of fill that can be applied to a shape.
 #[derive(Clone, Debug)]
 pub enum Fill {
@@ -622,6 +640,7 @@ impl From<&TextStyle> for HighlightStyle {
             background_color: other.background_color,
             underline: other.underline,
             strikethrough: other.strikethrough,
+            rainbow_bracket: None,
             fade_out: None,
         }
     }
@@ -666,6 +685,10 @@ impl HighlightStyle {
 
         if other.strikethrough.is_some() {
             self.strikethrough = other.strikethrough;
+        }
+
+        if other.rainbow_bracket.is_some() {
+            self.rainbow_bracket = other.rainbow_bracket;
         }
 
         match (other.fade_out, self.fade_out) {
